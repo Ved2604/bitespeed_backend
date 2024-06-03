@@ -1,0 +1,15 @@
+{ "compilerOptions": {
+  "target": "ES2019",                       // Ensures support for Array.prototype.includes
+  "module": "commonjs",
+  "strict": true,
+  "esModuleInterop": true,
+  "skipLibCheck": true,
+  "forceConsistentCasingInFileNames": true,
+  "resolveJsonModule": true,
+  "outDir": "./dist",
+  "baseUrl": "./",
+  "incremental": true
+}, 
+  "extends": "./tsconfig.json",
+  "exclude": ["node_modules", "test", "dist", "**/*spec.ts"]
+}
