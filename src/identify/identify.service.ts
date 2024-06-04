@@ -1,13 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { CreateIdentifyDto } from './dto/create-identify.dto';
 import { DatabaseService } from 'src/database/database.service';
+import { Console } from 'console';
 
 @Injectable()
 export class IdentifyService { 
   constructor(private readonly databaseService: DatabaseService) {}
 
   async create(createIdentifyDto: CreateIdentifyDto) {   
-    const { email, phoneNumber } = createIdentifyDto;
+    let { email, phoneNumber } = createIdentifyDto;  
+    email = email?.trim() || null;
+    phoneNumber = phoneNumber?.trim() || null;  
+    if (!email && !phoneNumber) {
+      // If both email and phone number are not provided, return an appropriate response or handle as needed
+      return {
+        contact: null,
+        message: 'At least one of email or phone number must be provided.'
+      };
+    }
+
+
     let existingContacts = await this.databaseService.contact.findMany({
       where: {
         OR: [
@@ -16,7 +28,7 @@ export class IdentifyService {
         ],
       }
     });
-
+  console.log(existingContacts) 
 // CASE 1: If no contacts found, create a new primary contact
     if (existingContacts.length === 0) {
       const newContact = await this.databaseService.contact.create({
@@ -69,12 +81,10 @@ export class IdentifyService {
     const secondaryContacts = sortedContacts.slice(1);
 
     // Check if we need to create a new secondary contact
-    const emailExists = allContacts.some(contact => contact.email === email);
-    const phoneNumberExists = allContacts.some(contact => contact.phoneNumber === phoneNumber);  
+    const emailExists = email ? allContacts.some(contact => contact.email === email) : true;
+    const phoneNumberExists = phoneNumber ? allContacts.some(contact => contact.phoneNumber === phoneNumber) : true;
 
-
-
-
+    
 
 
 // CASE 2: If contact with both email and phnone number exists, we are not going to create a new record instead we would just update the existing records. 
@@ -176,5 +186,6 @@ export class IdentifyService {
         }
       };
     }
-  }
+  
+}
 }

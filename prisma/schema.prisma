@@ -16,8 +16,8 @@ datasource db {
 
 model contact {
   id            Int       @id @default(autoincrement())
-  phoneNumber   String
-  email         String
+  phoneNumber   String?
+  email         String?
   linkedId      Int?      // Assuming this can be a foreign key reference to another User
   linkPrecedence Precedence
   createdAt     DateTime  @default(now())
